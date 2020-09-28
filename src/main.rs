@@ -1,11 +1,11 @@
 use std::collections::HashMap;
 
 fn main() {
-    let max_chars = max_char(&String::from("Today is Monday"));    
+    let max_chars = one(&String::from("Today is Monday"));    
     println!("the most of a char(first appearing) is '{}', appearing {} times", max_chars.0, max_chars.1);
 }
 
-fn max_char(input: &str) -> (char, i32) {
+fn one(input: &str) -> (char, i32) {
     // return the char that appears most and it's count
     // the first occurence of 
     let mut counts = HashMap::new();
