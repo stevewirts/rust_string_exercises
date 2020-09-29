@@ -1,8 +1,24 @@
 use std::collections::HashMap;
 
 fn main() {
-    let max_chars = one(&String::from("Today is Monday"));    
+    let max_chars = one("Today is Monday");    
     println!("the most of a char(first appearing) is '{}', appearing {} times", max_chars.0, max_chars.1);
+
+    let test_two_input = "supracalafragalisticexpealaddcious";
+    let test_two_output = two(test_two_input);
+    println!("all subsequent duplicates removed of {} is {}", test_two_input, test_two_output);
+}
+
+fn two(input: &str) -> String {
+    let mut r = String::new();
+    let mut s = std::collections::HashSet::new();
+    input.chars().for_each( |c | {
+        if !s.contains(&c) {
+            s.insert(c);
+            r.push(c);
+        }
+    });
+    r
 }
 
 fn one(input: &str) -> (char, i32) {
