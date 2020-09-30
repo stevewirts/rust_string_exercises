@@ -17,7 +17,22 @@ fn main() {
     let test_four_output = four(test_four_input_1, test_four_input_2);
     println!("4) characters of '{}' removed from '{}' yields '{}'", test_four_input_1, test_four_input_2, test_four_output);
 
+    let test_five_input_1 = "XaXbXcXdXe";
+    let test_five_input_2 = "XcXdXeXaXb";
+    let test_five_output = five(test_five_input_1, test_five_input_2);
+    let mut maybe = "";
+    if !test_five_output {
+        maybe = "not";
+    }
+    println!("4) '{}' is a {} rotation of '{}'", test_five_input_1, maybe,test_five_input_2);
+
 }
+
+fn five(input1: &str, input2: &str) -> bool {
+    let doubleup = format!("{}{}", input1, input1);
+    doubleup.contains(input2)
+}
+
 
 fn four(input1: &str, input2: &str) -> String {
     let mut r = String::new();
