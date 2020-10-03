@@ -24,55 +24,15 @@ fn main() {
     if !test_five_output {
         maybe = "not";
     }
-    println!("4) '{}' is a {} rotation of '{}'", test_five_input_1, maybe,test_five_input_2);
+    println!("5) '{}' is a {} rotation of '{}'", test_five_input_1, maybe,test_five_input_2);
 
-}
+    let test_six_input = "abracadabra";
+    let test_six_output = six(test_six_input);
+    println!("6) '{}' reversed is '{}'", test_six_input, test_six_output);
 
-fn five(input1: &str, input2: &str) -> bool {
-    let doubleup = format!("{}{}", input1, input1);
-    doubleup.contains(input2)
-}
-
-
-fn four(input1: &str, input2: &str) -> String {
-    let mut r = String::new();
-    let mut p = 'z';
-    input2.chars().for_each( |c | {
-        if !input1.contains(c) {
-            if !(c == ' ' && p == ' ') {
-                r.push(c);
-                p = c;
-            }
-        }
-    });
-    r
-}
-
-fn three(input: &str) -> String {
-    let mut r = String::new();
-    let mut s = std::collections::HashSet::new();
-    input.chars().for_each( |c | {
-        if !s.contains(&c) {
-            s.insert(c);
-        } else {
-            if !r.contains(c) {
-                r.push(c);
-            }
-        }
-    });
-    r
-}
-
-fn two(input: &str) -> String {
-    let mut r = String::new();
-    let mut s = std::collections::HashSet::new();
-    input.chars().for_each( |c | {
-        if !s.contains(&c) {
-            s.insert(c);
-            r.push(c);
-        }
-    });
-    r
+    let test_seven_input = "abracadabra";
+    let test_seven_output = seven(test_seven_input, "");
+    println!("6) '{}' reversed is '{}'", test_seven_input, test_seven_output);
 }
 
 fn one(input: &str) -> (char, i32) {
@@ -94,4 +54,70 @@ fn one(input: &str) -> (char, i32) {
         }
     });
     (max_char, max_value)
+}
+
+
+fn two(input: &str) -> String {
+    let mut r = String::new();
+    let mut s = std::collections::HashSet::new();
+    input.chars().for_each( |c | {
+        if !s.contains(&c) {
+            s.insert(c);
+            r.push(c);
+        }
+    });
+    r
+}
+
+fn three(input: &str) -> String {
+    let mut r = String::new();
+    let mut s = std::collections::HashSet::new();
+    input.chars().for_each( |c | {
+        if !s.contains(&c) {
+            s.insert(c);
+        } else {
+            if !r.contains(c) {
+                r.push(c);
+            }
+        }
+    });
+    r
+}
+
+fn four(input1: &str, input2: &str) -> String {
+    let mut r = String::new();
+    let mut p = 'z';
+    input2.chars().for_each( |c | {
+        if !input1.contains(c) {
+            if !(c == ' ' && p == ' ') {
+                r.push(c);
+                p = c;
+            }
+        }
+    });
+    r
+}
+
+fn five(input1: &str, input2: &str) -> bool {
+    let doubleup = format!("{}{}", input1, input1);
+    doubleup.contains(input2)
+}
+
+fn six(input: &str) -> String {
+    let mut r = String::new();
+    input.chars().for_each( | c | {
+        r = format!("{}{}", c, r);
+    });
+    r
+}
+
+fn seven(i1: &str, i2: &str) -> String {
+    let mut r2 = String::from(i2);
+    if i1.len() == 0 {
+        return r2;
+    }
+    r2.push(i1.chars().last().unwrap());
+    let size_minus_one = i1.len() - 1;
+    let r1 = &i1[..size_minus_one];
+    return seven(&r1, &r2);
 }
