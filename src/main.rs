@@ -30,9 +30,33 @@ fn main() {
     let test_six_output = six(test_six_input);
     println!("6) '{}' reversed is '{}'", test_six_input, test_six_output);
 
-    let test_seven_input = "abracadabra";
-    let test_seven_output = seven(test_seven_input, "");
-    println!("6) '{}' reversed is '{}'", test_seven_input, test_seven_output);
+    let test_seven_input = "123";
+    let test_seven_output = seven("", test_seven_input);
+    println!("7) '{}' reversed is '{}'", test_seven_input, test_seven_output);
+
+    let test_eight_input = "012";
+    let test_eight_output = eight(test_eight_input);
+    println!("8) '{}' has {} permutations {:?}", test_eight_input, test_eight_output.len(), test_eight_output);
+
+}
+
+fn eight(i: &str) -> Vec<String>  {
+    let mut r = vec!();
+    if i.len() == 1 {
+        r.push(String::from(i));
+        return r;
+    }
+    for idx in 0..i.len() {
+        let front = &i[0..idx];
+        let char = &i[idx..idx+1];
+        let end = &i[idx+1..];
+        let without = format!("{}{}", front, end);
+        let subperms = eight(&without);
+        for sp in subperms {
+            r.push(format!("{}{}", char, sp));
+        }
+    }
+    r
 }
 
 fn one(input: &str) -> (char, i32) {
