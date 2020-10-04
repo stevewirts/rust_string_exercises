@@ -1,4 +1,5 @@
 use std::collections::HashMap;
+use std::collections::HashSet;
 
 fn main() {
     let max_chars = one("Today is Monday");    
@@ -38,22 +39,37 @@ fn main() {
     let test_eight_output = eight(test_eight_input);
     println!("8) '{}' has {} permutations {:?}", test_eight_input, test_eight_output.len(), test_eight_output);
 
+    let test_nine_input = "uprasupradupra";
+    let test_nine_output = nine(test_nine_input);
+    println!("9) the first unrepeated char is '{}'", test_nine_output);
+
+    let test_ten_input = "best is Rust";
+    let test_ten_output = ten(test_ten_input);
+    println!("9) reversed sentence is '{}'", test_ten_output);
+
+    let test_eleven_input1 = "this is a test string";
+    let test_eleven_input2 = "tist";
+    let test_eleven_output = eleven(test_eleven_input1, test_eleven_input2);
+    println!("9) smallest subtring {}", test_eleven_output);
+
 }
 
-fn eight(i: &str) -> Vec<String>  {
-    let mut r = vec!();
-    if i.len() == 1 {
-        r.push(String::from(i));
-        return r;
-    }
-    for idx in 0..i.len() {
-        let front = &i[0..idx];
-        let char = &i[idx..idx+1];
-        let end = &i[idx+1..];
-        let without = format!("{}{}", front, end);
-        let subperms = eight(&without);
-        for sp in subperms {
-            r.push(format!("{}{}", char, sp));
+fn eleven(i1: &str, i2: &str) -> String {
+    let mut r = String::from(i1);
+    for o in 0..i1.len() {
+        for i in o..i1.len() {
+            let ss = &i1[o..i];
+            let mut filtered = String::new();
+            for c in ss.chars() {
+                if i2.contains(c) {
+                    filtered.push(c);
+                }
+            }
+            let set = HashSet::new();
+            let matches = filtered == i2;
+            if matches && (ss.len() < r.len()) {
+                r = String::from(ss);
+            }
         }
     }
     r
@@ -144,4 +160,52 @@ fn seven(i1: &str, i2: &str) -> String {
     let size_minus_one = i1.len() - 1;
     let r1 = &i1[..size_minus_one];
     return seven(&r1, &r2);
+}
+
+fn eight(i: &str) -> Vec<String>  {
+    let mut r = vec!();
+    if i.len() == 1 {
+        r.push(String::from(i));
+        return r;
+    }
+    for idx in 0..i.len() {
+        let front = &i[0..idx];
+        let char = &i[idx..idx+1];
+        let end = &i[idx+1..];
+        let without = format!("{}{}", front, end);
+        let subperms = eight(&without);
+        for sp in subperms {
+            r.push(format!("{}{}", char, sp));
+        }
+    }
+    r
+}
+
+fn nine(i: &str) -> char {
+    for e in i.chars() {
+        let mut count = 0;
+        for se in i.chars() {
+            if se == e {
+                count = count + 1;
+            }
+        }
+        if count == 1 {
+            return e;
+        }
+    }
+    '\0'
+}
+
+fn ten(i: &str) -> String {
+    let mut r = String::new();
+    let mut is_first = true;
+    for each in i.split(" ") {
+        if is_first {
+            is_first = false;
+            r = String::from(each);
+        } else {
+            r = format!("{} {}", each, r);
+        }
+    }
+    r
 }
