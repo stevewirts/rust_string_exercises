@@ -1,9 +1,9 @@
 use std::collections::HashMap;
-use std::collections::HashSet;
 
 fn main() {
-    let max_chars = one("Today is Monday");    
-    println!("1) the most of a char(first appearing) is '{}', appearing {} times", max_chars.0, max_chars.1);
+    let test_one_input = "Today is Monday";
+    let max_chars = one(test_one_input);
+    println!("1) the most of a char(first appearing) in '{}' is '{}', appearing {} times", test_one_input, max_chars.0, max_chars.1);
 
     let test_two_input = "supracalafragalisticexpealadocious";
     let test_two_output = two(test_two_input);
@@ -41,39 +41,87 @@ fn main() {
 
     let test_nine_input = "uprasupradupra";
     let test_nine_output = nine(test_nine_input);
-    println!("9) the first unrepeated char is '{}'", test_nine_output);
+    println!("9) the first unrepeated char in '{}' is '{}'", test_nine_input, test_nine_output);
 
     let test_ten_input = "best is Rust";
     let test_ten_output = ten(test_ten_input);
-    println!("9) reversed sentence is '{}'", test_ten_output);
+    println!("10) reversed sentence '{}' is '{}'", test_ten_input, test_ten_output);
 
     let test_eleven_input1 = "this is a test string";
     let test_eleven_input2 = "tist";
     let test_eleven_output = eleven(test_eleven_input1, test_eleven_input2);
-    println!("9) smallest subtring {}", test_eleven_output);
+    println!("11) smallest substring '{}' inside of '{}' is '{}'", test_eleven_input2, test_eleven_input1, test_eleven_output);
 
 }
 
 fn eleven(i1: &str, i2: &str) -> String {
-    let mut r = String::from(i1);
-    for o in 0..i1.len() {
-        for i in o..i1.len() {
-            let ss = &i1[o..i];
-            let mut filtered = String::new();
-            for c in ss.chars() {
-                if i2.contains(c) {
-                    filtered.push(c);
+    let mut solutions: Vec<String> = vec!();
+
+    // tuples of (char, original index of char in the input string)
+    let mut pairs: Vec<(char, usize)> = i1.chars().enumerate().map( |e | -> (char, usize) {
+        (e.1, e.0)
+    }).filter(|p| i2.contains(p.0)).collect();
+    // println!("{:?}", pairs);
+
+    //iterate the input string from left to right
+    for _i in 0..pairs.len() {
+
+        // p will be the match that we remove characters from
+        // if p becomes empty we know we've matched
+        let mut p = String::from(i2.clone());
+
+        // remember the first match from p as the head
+        let mut head: Option<(char, usize)> = None;
+
+        // remember the final match/char from p as the tail
+        let mut tail: Option<(char, usize)> = None;
+
+        // lets iterate over our pairs of (char, index)
+        for e in &pairs {
+
+            // if the pair is in p,
+            // remove the character from p and
+            // try and set the head and tail
+            if p.contains(e.0) {
+                p = p.replacen(e.0, "", 1);
+                match head {
+                    None => { head = Some(*e) },
+                    Some(_) if p.is_empty() => {
+                        tail = Some(*e);
+                        break
+                    },
+                    Some(_) => {}
                 }
             }
-            let set = HashSet::new();
-            let matches = filtered == i2;
-            if matches && (ss.len() < r.len()) {
-                r = String::from(ss);
-            }
         }
+
+        // if we found all the characters in i2
+        // we have a match, so head and tail will be populated
+        // chop the string out of i1 and submit it as a solution
+        if head != None && tail != None {
+            let h = head.unwrap();
+            let t = tail.unwrap();
+            let solution = String::from(&i1[h.1..=t.1]);
+            solutions.push(solution);
+        }
+
+        // remove the front character, and iterate again
+        pairs.remove(0);
     }
-    r
+    // println!("{:?}", solutions);
+
+    // find the shortest solution
+    let shortest = solutions.iter().fold(solutions[0].clone(), |acc, item| {
+        if item.len() < acc.len() {
+            item.clone()
+        } else {
+            acc
+        }
+    });
+
+    shortest
 }
+
 
 fn one(input: &str) -> (char, i32) {
     // return the char that appears most and it's count
