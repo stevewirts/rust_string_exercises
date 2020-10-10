@@ -81,6 +81,30 @@ fn main() {
     let test_eighteen_output = eighteen(test_eighteen_input);
     println!("18) '{}' has {} words", test_eighteen_input, test_eighteen_output);
 
+    let test_nineteen_input = "([{}][]([]()){})";
+    let test_nineteen_output = nineteen(test_nineteen_input);
+    maybe = "has";
+    if !test_nineteen_output {
+        maybe = "does not have";
+    }
+    println!("19) '{}' {} balanced parens", test_nineteen_input, maybe);
+
+}
+
+fn nineteen(i: &str) -> bool {
+    let mut s:Vec<char> = vec!();
+    for c in i.chars() {
+        match c {
+            '(' => s.push('('),
+            '[' => s.push('['),
+            '{' => s.push('{'),
+            ')' => if '(' != s.pop().unwrap() { return false },
+            ']' => if '[' != s.pop().unwrap() { return false },
+            '}' => if '{' != s.pop().unwrap() { return false },
+            _ => {}
+        }
+    }
+    true
 }
 
 fn one(input: &str) -> (char, i32) {
