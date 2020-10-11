@@ -89,22 +89,54 @@ fn main() {
     }
     println!("19) '{}' {} balanced parens", test_nineteen_input, maybe);
 
+    let test_twenty_input = "the rain in spain red rum sir is murder falls sometimes on the racecar but mainly in the plains";
+    let test_twenty_output = twenty(test_twenty_input);
+    println!("20) '{}' has '{}' as the longest internal palindrome", test_twenty_input, test_twenty_output);
+
 }
 
-fn nineteen(i: &str) -> bool {
-    let mut s:Vec<char> = vec!();
-    for c in i.chars() {
-        match c {
-            '(' => s.push('('),
-            '[' => s.push('['),
-            '{' => s.push('{'),
-            ')' => if '(' != s.pop().unwrap() { return false },
-            ']' => if '[' != s.pop().unwrap() { return false },
-            '}' => if '{' != s.pop().unwrap() { return false },
-            _ => {}
-        }
+fn twenty(i: &str) -> String {
+    let mut solutions = vec!();
+    for n in 2..(i.len()-1) {
+        let e = palindrome_at(i, n);
+        solutions.push(e);
     }
-    true
+    // find the longest solution
+    let longest = solutions.iter().fold(
+        solutions[0].clone(),
+        |acc, item| {
+            if item.len() > acc.len() {
+                item.clone()
+            } else {
+                acc
+            }
+        }
+    );
+    longest
+}
+
+fn palindrome_at(input: &str, s: usize) -> String {
+    let i:Vec<(char, usize)> = input.chars().enumerate()
+        .map(|(i,c)| (c, i))
+        .filter(|p| p.0 != ' ')
+        .collect();
+    let m = i.len();
+    let fs = std::cmp::min( i.len() - 2, std::cmp::max(1,s));
+    let mut l = fs;
+    let mut r = fs;
+    if i[l].0 != i[r].0 { // we are not the same assume a center "pivot" character center
+        r = r + 1;
+    }
+    while l > 0 && r < m && i[l].0 == i[r].0 {
+        l = l - 1;
+        r = r + 1;
+    }
+    l = std::cmp::max(0, l);
+    r = std::cmp::min(i.len() - 1, r);
+    let begin = i[l+1].1;
+    let end = std::cmp::min(input.len() - 1,i[r].1);
+    let result = String::from(&input[begin..end]);
+    result
 }
 
 fn one(input: &str) -> (char, i32) {
@@ -397,4 +429,20 @@ fn eighteen(i: &str) -> isize {
     i = i.replace("  ", " ");
     let count = i.split(' ').count() as isize;
     count
+}
+
+fn nineteen(i: &str) -> bool {
+    let mut s:Vec<char> = vec!();
+    for c in i.chars() {
+        match c {
+            '(' => s.push('('),
+            '[' => s.push('['),
+            '{' => s.push('{'),
+            ')' => if '(' != s.pop().unwrap() { return false },
+            ']' => if '[' != s.pop().unwrap() { return false },
+            '}' => if '{' != s.pop().unwrap() { return false },
+            _ => {}
+        }
+    }
+    true
 }
