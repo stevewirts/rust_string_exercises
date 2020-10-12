@@ -93,50 +93,10 @@ fn main() {
     let test_twenty_output = twenty(test_twenty_input);
     println!("20) '{}' has '{}' as the longest internal palindrome", test_twenty_input, test_twenty_output);
 
-}
+    let test_twentyone_input = 1776; //;"MDCCLXXVI";
+    let test_twentyone_output = twentyone(test_twentyone_input);
+    println!("21) arabic number '{}' equals roman number {}", test_twentyone_input, test_twentyone_output);
 
-fn twenty(i: &str) -> String {
-    let mut solutions = vec!();
-    for n in 2..(i.len()-1) {
-        let e = palindrome_at(i, n);
-        solutions.push(e);
-    }
-    // find the longest solution
-    let longest = solutions.iter().fold(
-        solutions[0].clone(),
-        |acc, item| {
-            if item.len() > acc.len() {
-                item.clone()
-            } else {
-                acc
-            }
-        }
-    );
-    longest
-}
-
-fn palindrome_at(input: &str, s: usize) -> String {
-    let i:Vec<(char, usize)> = input.chars().enumerate()
-        .map(|(i,c)| (c, i))
-        .filter(|p| p.0 != ' ')
-        .collect();
-    let m = i.len();
-    let fs = std::cmp::min( i.len() - 2, std::cmp::max(1,s));
-    let mut l = fs;
-    let mut r = fs;
-    if i[l].0 != i[r].0 { // we are not the same assume a center "pivot" character center
-        r = r + 1;
-    }
-    while l > 0 && r < m && i[l].0 == i[r].0 {
-        l = l - 1;
-        r = r + 1;
-    }
-    l = std::cmp::max(0, l);
-    r = std::cmp::min(i.len() - 1, r);
-    let begin = i[l+1].1;
-    let end = std::cmp::min(input.len() - 1,i[r].1);
-    let result = String::from(&input[begin..end]);
-    result
 }
 
 fn one(input: &str) -> (char, i32) {
@@ -446,3 +406,66 @@ fn nineteen(i: &str) -> bool {
     }
     true
 }
+
+fn twenty(i: &str) -> String {
+    let mut solutions = vec!();
+    for n in 2..(i.len()-1) {
+        let e = palindrome_at(i, n);
+        solutions.push(e);
+    }
+    // find the longest solution
+    let longest = solutions.iter().fold(
+        solutions[0].clone(),
+        |acc, item| {
+            if item.len() > acc.len() {
+                item.clone()
+            } else {
+                acc
+            }
+        }
+    );
+    longest
+}
+
+fn palindrome_at(input: &str, s: usize) -> String {
+    let i:Vec<(char, usize)> = input.chars().enumerate()
+        .map(|(i,c)| (c, i))
+        .filter(|p| p.0 != ' ')
+        .collect();
+    let m = i.len();
+    let fs = std::cmp::min( i.len() - 2, std::cmp::max(1,s));
+    let mut l = fs;
+    let mut r = fs;
+    if i[l].0 != i[r].0 { // we are not the same assume a center "pivot" character center
+        r = r + 1;
+    }
+    while l > 0 && r < m && i[l].0 == i[r].0 {
+        l = l - 1;
+        r = r + 1;
+    }
+    l = std::cmp::max(0, l);
+    r = std::cmp::min(i.len() - 1, r);
+    let begin = i[l+1].1;
+    let end = std::cmp::min(input.len() - 1,i[r].1);
+    let result = String::from(&input[begin..end]);
+    result
+}
+
+fn twentyone(i: isize) -> String {
+    let s = format!("{}", i);
+    let mut r = String::from("");
+    let mut mult = 1;
+    for c in s.chars().rev() {
+        let num = mult * c.to_digit(10).unwrap() as isize;
+        let p = ROMANS.iter().find(|p| p.1 == num);
+        match p {
+            Some((rn, _v)) => {
+                r = format!("{}{}", rn, r);
+            },
+            _ => {},
+        }
+        mult = mult * 10;
+    }
+    r
+}
+
